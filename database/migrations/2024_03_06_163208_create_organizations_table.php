@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
+            $table->string('name')->required();
+            $table->string('email')->required();
             $table->string('password');
             $table->string('niche');
             $table->string('region');
             $table->string('phone');
+            $table->boolean('is_active')->default(true);
+            $table->integer('latest_avg_revenue');
+            $table->integer('subscription_amount');
             $table->timestamps();
         });
     }
