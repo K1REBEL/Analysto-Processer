@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('employees')->onDelete('cascade');
             $table->unsignedBigInteger('prod_id');
             $table->unsignedBigInteger('url_id');
+            $table->boolean('frozen')->default(false);
             $table->timestamps();
         });
     }
