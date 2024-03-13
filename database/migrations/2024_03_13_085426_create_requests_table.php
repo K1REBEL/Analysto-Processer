@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('region');
             $table->string('avg_revenue');
             $table->string('referral_method');
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+            // $table->string('status')->default('pending');
             $table->timestamps();
         });
     }
