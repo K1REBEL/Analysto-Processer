@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->required();
             $table->string('email')->required();
             $table->string('password');
+            $table->boolean('password_set')->default(false);
             $table->string('niche');
             $table->string('region');
             $table->string('phone');
