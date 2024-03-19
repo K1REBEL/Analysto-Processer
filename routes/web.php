@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/fetchAmazon', [ProductController::class,'fetchDataAmazon']);
+Route::get('/fetchNoon', [ProductController::class,'fetchDataNoon']);
+Route::get('/fetchJumia', [ProductController::class,'fetchDataJumia']);
+Route::get('/fetchBtech', [ProductController::class,'fetchDataBtech']);

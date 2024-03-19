@@ -9,6 +9,9 @@ class URL extends Model
 {
     use HasFactory;
 
+    protected $table = 'links';
+
+
     public function product()
     {
         return $this->belongsTo(Product::class);

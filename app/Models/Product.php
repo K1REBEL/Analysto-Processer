@@ -16,6 +16,6 @@ class Product extends Model
 
     public function links()
     {
-        return $this->hasMany(URL::class);
+        return $this->hasMany(URL::class , 'prod_id');
     }
 }
