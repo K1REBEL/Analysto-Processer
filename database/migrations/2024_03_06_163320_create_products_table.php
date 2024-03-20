@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('sku');
             $table->string('brand');
             $table->string('category');
+            $table->string('product_photo')->nullable();
             $table->timestamps();
         });
     }

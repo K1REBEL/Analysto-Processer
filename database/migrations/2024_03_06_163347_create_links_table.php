@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('links', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('prod_id');
-            $table->string('identifier');
+            $table->string('identifier')->unique();
             $table->string('platform');
-            $table->string('url');
+            $table->string('url')->unique();
             $table->timestamps();
         });
     }

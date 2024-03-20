@@ -18,7 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/fetchAmazon', [ProductController::class,'fetchDataAmazon']);
-Route::get('/fetchNoon', [ProductController::class,'fetchDataNoon']);
-Route::get('/fetchJumia', [ProductController::class,'fetchDataJumia']);
-Route::get('/fetchBtech', [ProductController::class,'fetchDataBtech']);
+Route::get('/fetch/amazon', [ProductController::class,'fetchDataAmazon']);
+Route::get('/fetch/noon', [ProductController::class,'fetchDataNoon']);
+Route::get('/fetch/jumia', [ProductController::class,'fetchDataJumia']);
+Route::get('/fetch/btech', [ProductController::class,'fetchDataBtech']);
+
+
+Route::post('/get/amazon',[ProductController::class,'getDataAmazon']);

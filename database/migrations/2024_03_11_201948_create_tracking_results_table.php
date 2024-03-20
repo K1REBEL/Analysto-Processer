@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('sku');
             $table->text('title');
             $table->string('current_seller');
-            $table->string('last_seller');
+            $table->string('last_seller')->nullable();
             $table->decimal('current_price', 10, 2);
-            $table->decimal('last_price', 10, 2);
+            $table->decimal('last_price', 10, 2)->nullable();
             $table->timestamps();
         });
     }

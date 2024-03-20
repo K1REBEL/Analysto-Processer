@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->integer('latest_avg_revenue');
             $table->integer('subscription_amount');
+            $table->string('photo_path')->nullable();
             $table->timestamps();
         });
     }
