@@ -58,7 +58,7 @@ class ProductController extends Controller
 //        }
 //
 //    }
-    public function fetchDataAmazon(Request $request, Result $result, Product $product, URL $URL)
+    public function fetchDataAmazon(Result $result)
     {
         $products = Product::with('links')->whereHas('links', function ($query) {
             $query->where('platform', 'amazon');
@@ -68,18 +68,16 @@ class ProductController extends Controller
             $platform = $product->links->pluck('platform')->first(); // Assuming a product has only one platform
             if ($platform === 'amazon') {
                 $identifier = $product->links->pluck('identifier')->first(); // Assuming a product has only one identifier
-                $sku = $product->sku; // Assuming a product has only one identifier
                 $url = $product->links->pluck('url')->first();
+                $sku = $product->sku;
                 $brand = $product->brand;
                 $category = $product->category;
                 $filteredProducts[] = [
                     'asin' => $identifier,
                     'url' => $url,
-                    'platform' => $platform
                 ];
             }
         }
-
         $client = new Client();
         $response = $client->post('http://127.0.0.1:5000/amazon', [
             'json' => $filteredProducts
@@ -87,10 +85,12 @@ class ProductController extends Controller
 
         if ($response->getStatusCode() === 200) {
             $scrapedData = json_decode($response->getBody(), true);
-//            $platform = $product->platform;
 
             // Assuming you have a model named ScrapeData
             foreach ($scrapedData['scraped_data'] as $data) {
+                $url = $data['url'];
+                $link = Link::where('url', $url)->first();
+                log::info($link);
                 $result->create([
                     'platform' => 'amazon',
                     'date' => $data['date'],
@@ -113,10 +113,11 @@ class ProductController extends Controller
 
 
 
-    public function fetchDataNoon()
+    public function fetchDataNoon(Result $result)
     {
-        $products = Product::with('links')->get();
-
+        $products = Product::with('links')->whereHas('links', function ($query) {
+            $query->where('platform', 'noon');
+        })->get();
         $filteredProducts = [];
 
         foreach ($products as $product) {
@@ -124,7 +125,9 @@ class ProductController extends Controller
             if ($platform === 'noon') {
                 $identifier = $product->links->pluck('identifier')->first(); // Assuming a product has only one identifier
                 $url = $product->links->pluck('url')->first();
-
+                $brand = $product->brand;
+                $category = $product->category;
+                $sku = $product->sku;
                 $filteredProducts[] = [
                     'asin' => $identifier,
                     'url' => $url
@@ -136,17 +139,33 @@ class ProductController extends Controller
             'json' => $filteredProducts
         ]);
         if ($response->getStatusCode() === 200) {
-            return "Data sent to Flask server successfully";
+            $scrapedData = json_decode($response->getBody(), true);
+            // Assuming you have a model named ScrapeData
+            foreach ($scrapedData['scraped_data'] as $data) {
+                $result->create([
+                    'platform' => 'noon',
+                    'date' => $data['date'],
+                    'time' => $data['time'],
+                    'brand' => $brand, // Use the brand from scraped data
+                    'category' => $category, // Use the category from scraped data
+                    'identifier' => $identifier,
+                    'sku' => $sku,
+                    'title' => $data['prod_title'],
+                    'current_seller' => $data['seller'],
+                    'current_price' => '20.45'
+                ]);
+            }
+            return "Data sent to Flask server successfully and saved in the database";
         } else {
             return "Failed to send data to Flask server";
         }
-
-        return $filteredProducts;
     }
 
-    public function fetchDataJumia()
+    public function fetchDataJumia(Result $result)
     {
-        $products = Product::with('links')->get();
+        $products = Product::with('links')->whereHas('links', function ($query) {
+            $query->where('platform', 'jumia');
+        })->get();
 
         $filteredProducts = [];
 
@@ -155,7 +174,9 @@ class ProductController extends Controller
             if ($platform === 'jumia') {
                 $identifier = $product->links->pluck('identifier')->first(); // Assuming a product has only one identifier
                 $url = $product->links->pluck('url')->first();
-
+                $brand = $product->brand;
+                $category = $product->category;
+                $sku = $product->sku;
                 $filteredProducts[] = [
                     'query' => $url
                 ];
@@ -166,17 +187,33 @@ class ProductController extends Controller
             'json' => $filteredProducts
         ]);
         if ($response->getStatusCode() === 200) {
-            return "Data sent to Flask server successfully";
+            $scrapedData = json_decode($response->getBody(), true);
+            // Assuming you have a model named ScrapeData
+            foreach ($scrapedData['scraped_data'] as $data) {
+                $result->create([
+                    'platform' => 'jumia',
+                    'date' => $data['date'],
+                    'time' => $data['time'],
+                    'brand' => $brand, // Use the brand from scraped data
+                    'category' => $category, // Use the category from scraped data
+                    'identifier' => $identifier,
+                    'sku' => $sku,
+                    'title' => $data['prod_title'],
+                    'current_seller' => $data['seller'],
+                    'current_price' => '20.45'
+                ]);
+            }
+            return "Data sent to Flask server successfully and saved in the database";
         } else {
             return "Failed to send data to Flask server";
         }
-
-        return $filteredProducts;
     }
 
-    public function fetchDataBtech()
+    public function fetchDataBtech(Result $result)
     {
-        $products = Product::with('links')->get();
+        $products = Product::with('links')->whereHas('links', function ($query) {
+            $query->where('platform', 'btech');
+        })->get();
 
         $filteredProducts = [];
 
@@ -185,7 +222,9 @@ class ProductController extends Controller
             if ($platform === 'btech') {
                 $identifier = $product->links->pluck('identifier')->first(); // Assuming a product has only one identifier
                 $url = $product->links->pluck('url')->first();
-
+                $brand = $product->brand;
+                $category = $product->category;
+                $sku = $product->sku;
                 $filteredProducts[] = [
                     'sku' => $product->sku,
                     'url' => $url
@@ -197,36 +236,25 @@ class ProductController extends Controller
             'json' => $filteredProducts
         ]);
         if ($response->getStatusCode() === 200) {
-            return "Data sent to Flask server successfully";
+            $scrapedData = json_decode($response->getBody(), true);
+            // Assuming you have a model named ScrapeData
+            foreach ($scrapedData['scraped_data'] as $data) {
+                $result->create([
+                    'platform' => 'btech',
+                    'date' => $data['date'],
+                    'time' => $data['time'],
+                    'brand' => $brand, // Use the brand from scraped data
+                    'category' => $category, // Use the category from scraped data
+                    'identifier' => $identifier,
+                    'sku' => $sku,
+                    'title' => $data['prod_title'],
+                    'current_seller' => $data['seller'],
+                    'current_price' => '20.45'
+                ]);
+            }
+            return "Data sent to Flask server successfully and saved in the database";
         } else {
             return "Failed to send data to Flask server";
         }
-        return $filteredProducts;
     }
-
-    public function getDataAmazon(Request $request, Result $result, Product $product, URL $URL) {
-        Log::info('Received data from Flask:', $request->all());
-        $scrapedData = $request->json()->get('scraped_data');
-        $platform = $product->platform;
-
-
-        // Loop through each scraped data item and create a Result record
-        foreach ($scrapedData as $data) {
-            Log::info('Inserting data:', $data);
-            $result->create([
-                'platform' => $platform,
-                'date' => $data['date'],
-                'time' => $data['time'],
-                'brand' => $product->brand,
-                'category' => $product->category,
-                'identifier' => $URL->identifier,
-                'sku' => $URL->sku,
-                'title' => $data['prod_title'],
-                'current_seller' => $data['seller'],
-                'current_price' => $data['price']
-            ]);
-        }
-        return response()->json(['message' => 'Data received and processed successfully'], 200);
-    }
-
 }
