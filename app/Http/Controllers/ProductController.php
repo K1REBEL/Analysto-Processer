@@ -19,12 +19,12 @@ class ProductController extends Controller
         })->get();
 
         foreach ($products as $product) {
-                $identifier = $product->links->pluck('identifier')->first(); // Assuming a product has only one identifier
-                $url = $product->links->pluck('url')->first();
-                $filteredProducts[] = [
-                    'asin' => $identifier,
-                    'url' => $url,
-                ];
+            $identifier = $product->links->pluck('identifier')->first(); // Assuming a product has only one identifier
+            $url = $product->links->pluck('url')->first();
+            $filteredProducts[] = [
+                'asin' => $identifier,
+                'url' => $url,
+            ];
         }
         $client = new Client();
         $response = $client->post('http://127.0.0.1:5000/amazon', [
@@ -39,7 +39,8 @@ class ProductController extends Controller
                 $url = $data['url'];
                 $link = URL::where('url', $url)->first();
                 $prod = Product::where('id',$link->prod_id)->first();
-//                log::info($prod);
+                $linkSeller = Result::where('sku', $prod->sku)->latest()->first();
+                log::info($linkSeller);
                 $result->create([
                     'platform' => 'amazon',
                     'date' => $data['date'],
@@ -49,6 +50,7 @@ class ProductController extends Controller
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
+                    'last_seller' => $linkSeller->current_seller,
                     'current_seller' => $data['seller'],
                     'current_price' => '20.45'
                 ]);
@@ -177,7 +179,9 @@ class ProductController extends Controller
             foreach ($scrapedData['scraped_data'] as $data) {
                 $url = $data['url'];
                 $link = URL::where('url', $url)->first();
+                $linkSeller = Result::where('url', $url)->first();
                 $prod = Product::where('id',$link->prod_id)->first();
+                log::info($linkSeller);
                 $result->create([
                     'platform' => 'btech',
                     'date' => $data['date'],
