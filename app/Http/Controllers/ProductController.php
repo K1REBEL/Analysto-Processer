@@ -103,30 +103,28 @@ class ProductController extends Controller
                 $link = URL::where('url', $url)->first();
                 $prod = Product::where('id',$link->prod_id)->first();
                 $linkSeller = Result::where('sku', $prod->sku)->latest()->first();
-                $result->create([
+                $lastSeller = $linkSeller ? $linkSeller->current_seller : null;
+                $lastPrice = $linkSeller ? $linkSeller->current_price : null;
+
+                // Create the result array with all necessary values
+                $resultArray = [
                     'platform' => 'noon',
                     'date' => $data['date'],
                     'time' => $data['time'],
-                    'brand' => $prod->brand, // Use the brand from scraped data
-                    'category' => $prod->category, // Use the category from scraped data
+                    'brand' => $prod->brand,
+                    'category' => $prod->category,
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
-                    'url' =>$data['url'],
+                    'url' => $data['url'],
                     'current_seller' => $data['seller'],
+                    'last_seller' => $lastSeller,
                     'current_price' => $data['price'],
-                ]);
-                if($linkSeller){
-                    $result->create([
-                        'last_seller' => $linkSeller->current_seller,
-                        'last_price' =>$linkSeller->current_price
-                    ]);
-                }else{
-                    $result->create([
-                        'last_seller' => 'NON',
-                        'last_price' =>'NON'
-                    ]);
-                }
+                    'last_price' => $lastPrice
+                ];
+
+                // Create the result entry
+                Result::create($resultArray);
             }
             return "Data sent to Flask server successfully and saved in the database";
         } else {
@@ -161,30 +159,28 @@ class ProductController extends Controller
 //                log::info($url);
                 $prod = Product::where('id',$link->prod_id)->first();
                 $linkSeller = Result::where('sku', $prod->sku)->latest()->first();
-                $result->create([
+                $lastSeller = $linkSeller ? $linkSeller->current_seller : null;
+                $lastPrice = $linkSeller ? $linkSeller->current_price : null;
+
+                // Create the result array with all necessary values
+                $resultArray = [
                     'platform' => 'jumia',
                     'date' => $data['date'],
                     'time' => $data['time'],
-                    'brand' => $prod->brand, // Use the brand from scraped data
-                    'category' => $prod->category, // Use the category from scraped data
+                    'brand' => $prod->brand,
+                    'category' => $prod->category,
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
-                    'url' =>$data['url'],
+                    'url' => $data['url'],
                     'current_seller' => $data['seller'],
+                    'last_seller' => $lastSeller,
                     'current_price' => $data['price'],
-                ]);
-                if($linkSeller){
-                    $result->create([
-                        'last_seller' => $linkSeller->current_seller,
-                        'last_price' =>$linkSeller->current_price
-                    ]);
-                }else{
-                    $result->create([
-                        'last_seller' => 'NON',
-                        'last_price' =>'NON'
-                    ]);
-                }
+                    'last_price' => $lastPrice
+                ];
+
+                // Create the result entry
+                Result::create($resultArray);
             }
             return "Data sent to Flask server successfully and saved in the database";
         } else {
@@ -220,30 +216,28 @@ class ProductController extends Controller
                 $linkSeller = Result::where('url', $url)->first();
                 $prod = Product::where('id',$link->prod_id)->first();
 //                log::info($linkSeller);
-                $result->create([
+                $lastSeller = $linkSeller ? $linkSeller->current_seller : null;
+                $lastPrice = $linkSeller ? $linkSeller->current_price : null;
+
+                // Create the result array with all necessary values
+                $resultArray = [
                     'platform' => 'btech',
                     'date' => $data['date'],
                     'time' => $data['time'],
-                    'brand' => $prod->brand, // Use the brand from scraped data
-                    'category' => $prod->category, // Use the category from scraped data
+                    'brand' => $prod->brand,
+                    'category' => $prod->category,
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
-                    'url' =>$data['url'],
+                    'url' => $data['url'],
                     'current_seller' => $data['seller'],
+                    'last_seller' => $lastSeller,
                     'current_price' => $data['price'],
-                ]);
-                if($linkSeller){
-                    $result->create([
-                        'last_seller' => $linkSeller->current_seller,
-                        'last_price' =>$linkSeller->current_price
-                    ]);
-                }else{
-                    $result->create([
-                        'last_seller' => 'NON',
-                        'last_price' =>'NON'
-                    ]);
-                }
+                    'last_price' => $lastPrice
+                ];
+
+                // Create the result entry
+                Result::create($resultArray);
             }
             return "Data sent to Flask server successfully and saved in the database";
         } else {
