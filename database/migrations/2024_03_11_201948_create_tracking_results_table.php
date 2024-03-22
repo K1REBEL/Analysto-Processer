@@ -21,10 +21,11 @@ return new class extends Migration
             $table->string('identifier');
             $table->string('sku');
             $table->text('title');
+            $table->string('url');
             $table->string('current_seller');
             $table->string('last_seller')->nullable();
-            $table->decimal('current_price', 10, 2);
-            $table->decimal('last_price', 10, 2)->nullable();
+            $table->float('current_price');
+            $table->float('last_price')->nullable();
             $table->timestamps();
         });
     }

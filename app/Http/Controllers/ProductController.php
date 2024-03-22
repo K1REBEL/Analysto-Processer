@@ -38,27 +38,39 @@ class ProductController extends Controller
             foreach ($scrapedData['scraped_data'] as $data) {
                 $url = $data['url'];
                 $link = URL::where('url', $url)->first();
-                $prod = Product::where('id',$link->prod_id)->first();
-                $linkSeller = Result::where('sku', $prod->sku)->latest()->first();
-                log::info($linkSeller);
-                $result->create([
+                $prod = Product::where('id', $link->prod_id)->first();
+                $linkSeller = Result::where('url', $link->url)->latest()->first();
+                log::info($link);
+
+                // Define last seller and last price variables based on $linkSeller existence
+                $lastSeller = $linkSeller ? $linkSeller->current_seller : null;
+                $lastPrice = $linkSeller ? $linkSeller->current_price : null;
+
+                // Create the result array with all necessary values
+                $resultArray = [
                     'platform' => 'amazon',
                     'date' => $data['date'],
                     'time' => $data['time'],
-                    'brand' => $prod->brand, // Use the brand from scraped data
-                    'category' => $prod->category, // Use the category from scraped data
+                    'brand' => $prod->brand,
+                    'category' => $prod->category,
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
-                    'last_seller' => $linkSeller->current_seller,
+                    'url' => $data['url'],
                     'current_seller' => $data['seller'],
-                    'current_price' => '20.45'
-                ]);
+                    'last_seller' => $lastSeller,
+                    'current_price' => $data['price'],
+                    'last_price' => $lastPrice
+                ];
+
+                // Create the result entry
+                Result::create($resultArray);
             }
             return "Data sent to Flask server successfully and saved in the database";
         } else {
             return "Failed to send data to Flask server";
         }
+
     }
 
 
@@ -90,6 +102,7 @@ class ProductController extends Controller
                 $url = $data['url'];
                 $link = URL::where('url', $url)->first();
                 $prod = Product::where('id',$link->prod_id)->first();
+                $linkSeller = Result::where('sku', $prod->sku)->latest()->first();
                 $result->create([
                     'platform' => 'noon',
                     'date' => $data['date'],
@@ -99,9 +112,21 @@ class ProductController extends Controller
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
+                    'url' =>$data['url'],
                     'current_seller' => $data['seller'],
-                    'current_price' => '50.50'
+                    'current_price' => $data['price'],
                 ]);
+                if($linkSeller){
+                    $result->create([
+                        'last_seller' => $linkSeller->current_seller,
+                        'last_price' =>$linkSeller->current_price
+                    ]);
+                }else{
+                    $result->create([
+                        'last_seller' => 'NON',
+                        'last_price' =>'NON'
+                    ]);
+                }
             }
             return "Data sent to Flask server successfully and saved in the database";
         } else {
@@ -133,8 +158,9 @@ class ProductController extends Controller
             foreach ($scrapedData['scraped_data'] as $data) {
                 $url = $data['query'];
                 $link = URL::where('url', $url)->first();
-                log::info($url);
+//                log::info($url);
                 $prod = Product::where('id',$link->prod_id)->first();
+                $linkSeller = Result::where('sku', $prod->sku)->latest()->first();
                 $result->create([
                     'platform' => 'jumia',
                     'date' => $data['date'],
@@ -144,9 +170,21 @@ class ProductController extends Controller
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
+                    'url' =>$data['url'],
                     'current_seller' => $data['seller'],
-                    'current_price' => '60.20'
+                    'current_price' => $data['price'],
                 ]);
+                if($linkSeller){
+                    $result->create([
+                        'last_seller' => $linkSeller->current_seller,
+                        'last_price' =>$linkSeller->current_price
+                    ]);
+                }else{
+                    $result->create([
+                        'last_seller' => 'NON',
+                        'last_price' =>'NON'
+                    ]);
+                }
             }
             return "Data sent to Flask server successfully and saved in the database";
         } else {
@@ -181,7 +219,7 @@ class ProductController extends Controller
                 $link = URL::where('url', $url)->first();
                 $linkSeller = Result::where('url', $url)->first();
                 $prod = Product::where('id',$link->prod_id)->first();
-                log::info($linkSeller);
+//                log::info($linkSeller);
                 $result->create([
                     'platform' => 'btech',
                     'date' => $data['date'],
@@ -191,9 +229,21 @@ class ProductController extends Controller
                     'identifier' => $link->identifier,
                     'sku' => $prod->sku,
                     'title' => $data['prod_title'],
+                    'url' =>$data['url'],
                     'current_seller' => $data['seller'],
-                    'current_price' => '20.45'
+                    'current_price' => $data['price'],
                 ]);
+                if($linkSeller){
+                    $result->create([
+                        'last_seller' => $linkSeller->current_seller,
+                        'last_price' =>$linkSeller->current_price
+                    ]);
+                }else{
+                    $result->create([
+                        'last_seller' => 'NON',
+                        'last_price' =>'NON'
+                    ]);
+                }
             }
             return "Data sent to Flask server successfully and saved in the database";
         } else {
