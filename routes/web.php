@@ -23,5 +23,3 @@ Route::get('/fetch/noon', [ProductController::class,'fetchDataNoon']);
 Route::get('/fetch/jumia', [ProductController::class,'fetchDataJumia']);
 Route::get('/fetch/btech', [ProductController::class,'fetchDataBtech']);
 
-
-Route::post('/get/amazon',[ProductController::class,'getDataAmazon']);
